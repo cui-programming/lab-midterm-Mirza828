@@ -1,35 +1,33 @@
 import React, { useState } from 'react';
-import { View, FlatList, Text } from 'react-native'; // You may switch Text to ui/Text later
-import { styles } from '../../styles/styles';
-import { initialAzkaar } from '../../data/azkaar';
+import { View } from 'react-native';
+import { Text, Button } from '../ui';
 
-/**
- * Custom/TasbihList
- * Renders a FlatList of azkaar with their counts.
- * NOTE: Increment/Decrement buttons are intentionally NOT implemented.
- * Students will add + and - controls using UI/Button and update state accordingly.
- */
 export default function TasbihList() {
-  const [items, setItems] = useState(initialAzkaar);
+  const [tasbihList, setTasbihList] = useState([
+    { name: 'SubhanAllah', count: 0 },
+    { name: 'Alhamdulillah', count: 0 },
+    { name: 'Allahu Akbar', count: 0 },
+    { name: 'La ilaha illa Allah', count: 0 },
+    { name: 'Astaghfirullah', count: 0 },
+  ]);
 
-  // HINT ONLY (do not complete): you will need handlers like increment(id) / decrement(id)
-
-  const renderItem = ({ item }) => (
-    <View style={styles.itemRow}>
-      <Text style={styles.itemName}>{item.phrase}</Text>
-      <Text style={styles.counter}>{item.count}</Text>
-      {/* TODO: Add increment/decrement buttons here using ui/Button */}
-    </View>
-  );
+  const changeCount = (name, val) => {
+    setTasbihList(tasbihList.map(t =>
+      t.name === name ? { ...t, count: Math.max(0, t.count + val) } : t
+    ));
+  };
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Tasbih Counter</Text>
-      <FlatList
-        data={items}
-        keyExtractor={(it) => it.id}
-        renderItem={renderItem}
-      />
+    <View style={{ marginVertical: 20, alignItems: 'center' }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Tasbih Counter</Text>
+      {tasbihList.map((t, i) => (
+        <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+          <Button title="-" onPress={() => changeCount(t.name, -1)} />
+          <Text style={{ width: 120 }}>{t.name}</Text>
+          <Text style={{ width: 30, textAlign: 'center' }}>{t.count}</Text>
+          <Button title="+" onPress={() => changeCount(t.name, 1)} />
+        </View>
+      ))}
     </View>
   );
 }
